@@ -14,7 +14,9 @@ VERSION := 0.1
 # ------------------------------------------------------------------------------
 
 SBIN_FILES := stashcache
-CONDOR_CONFIG := 10-stashcache.config
+INSTALL_SBIN_DIR := usr/sbin
+CONDOR_CONFIG := 01-stashcache.conf
+INSTALL_CONDOR_DIR := etc/condor/config.d
 PYTHON_LIB := xrootd_cache_stats.py
 
 DIST_FILES := $(SBIN_FILES) $(CONDOR_CONFIG) $(PYTHON_LIB) Makefile
@@ -51,9 +53,12 @@ ifneq ($(strip $(DIST_DIR_PREFIX)),) # avoid evil
 endif
 
 install:
-	install -p -m 0755 $(SBIN_FILES) $(DESTDIR)
-	install -p -m 0644 $(CONDOR_CONFIG) $(DESTDIR)
-	install -p -m 0644 $(PYTHON_LIB) $(DESTDIR)
+	mkdir -p $(DESTDIR)/$(INSTALL_SBIN_DIR)
+	install -p -m 0755 $(SBIN_FILES) $(DESTDIR)/$(INSTALL_SBIN_DIR)
+	mkdir -p $(DESTDIR)/$(INSTALL_CONDOR_DIR)
+	install -p -m 0644 $(CONDOR_CONFIG) $(DESTDIR)/$(INSTALL_CONDOR_DIR)
+	mkdir -p $(DESTDIR)/$(INSTALL_PYTHON_DIR)
+	install -p -m 0644 $(PYTHON_LIB) $(DESTDIR)/$(INSTALL_PYTHON_DIR)
 
 $(TARBALL_NAME): $(DIST_FILES)
 	$(eval TEMP_DIR := $(shell mktemp -d -p . $(DIST_DIR_PREFIX)XXXXXXXXXX))
